@@ -1,4 +1,5 @@
-export type Todo = { 
+export type Todo = {
+    priority: any; 
     description: string; 
     duedate: string;
 };
