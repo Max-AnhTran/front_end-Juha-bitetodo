@@ -11,9 +11,9 @@ function TodoList() {
     const [todos, setTodos] = useState<Todo[]>([]);
     const gridRef = useRef<AgGridReact<Todo>>(null);
     const [colDefs] = useState<ColDef[]>([
-        { field: "description", sortable: true, filter: true },
-        { field: "duedate", sortable: true, filter: true },
-        { field: "priority", sortable: true, filter: true,
+        { field: "description", sortable: true, filter: true, floatingFilter: true},
+        { field: "duedate", sortable: true, filter: true, floatingFilter: true },
+        { field: "priority", sortable: true, filter: true, floatingFilter: true,
             cellStyle: (params) => {
             if (params.value === "High") {
                 return { color: "red" };
