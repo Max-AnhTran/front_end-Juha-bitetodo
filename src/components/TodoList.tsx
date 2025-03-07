@@ -1,29 +1,60 @@
 import { useState, useRef } from "react";
 import { Todo } from "../types";
 // import TodoTable from "./TodoTable";
-import { AllCommunityModule, ModuleRegistry, ColDef, themeMaterial, themeBalham } from "ag-grid-community";
+import {
+    AllCommunityModule,
+    ModuleRegistry,
+    ColDef,
+    themeMaterial,
+    themeBalham,
+} from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react"; // React Data Grid Component
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+
+import dayjs from "dayjs";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TodoList() {
-    const [todo, setTodo] = useState<Todo>({ description: "", duedate: "", priority: "" });
+    const [todo, setTodo] = useState<Todo>({
+        description: "",
+        duedate: "",
+        priority: "",
+    });
     const [todos, setTodos] = useState<Todo[]>([]);
     const gridRef = useRef<AgGridReact<Todo>>(null);
     const [colDefs] = useState<ColDef[]>([
-        { field: "description", sortable: true, filter: true, floatingFilter: true},
-        { field: "duedate", sortable: true, filter: true, floatingFilter: true },
-        { field: "priority", sortable: true, filter: true, floatingFilter: true,
+        {
+            field: "description",
+            sortable: true,
+            filter: true,
+            floatingFilter: true,
+        },
+        {
+            field: "duedate",
+            sortable: true,
+            filter: true,
+            floatingFilter: true,
+        },
+        {
+            field: "priority",
+            sortable: true,
+            filter: true,
+            floatingFilter: true,
             cellStyle: (params) => {
-            if (params.value === "High") {
-                return { color: "red" };
-            } else if (params.value === "Medium") {
-                return { color: "orange" };
-            } else {
-                return { color: "green" };
-            }
-         },
-         },
+                if (params.value === "High") {
+                    return { color: "red" };
+                } else if (params.value === "Medium") {
+                    return { color: "orange" };
+                } else {
+                    return { color: "green" };
+                }
+            },
+        },
     ]);
 
     const addTodo = () => {
@@ -31,7 +62,7 @@ function TodoList() {
             alert("Please fill in all fields.");
         } else {
             setTodos([todo, ...todos]);
-            setTodo({ description: "", duedate: "", priority: ""});
+            setTodo({ description: "", duedate: "", priority: "" });
         }
     };
 
@@ -41,54 +72,62 @@ function TodoList() {
 
     const handleDelete = () => {
         setTodos(
-          todos.filter(
-            (_, index) => index !== Number(gridRef.current?.api.getSelectedNodes()[0].id)
-          )
-        )
-      }
+            todos.filter(
+                (_, index) =>
+                    index !==
+                    Number(gridRef.current?.api.getSelectedNodes()[0].id)
+            )
+        );
+    };
+
+    const setDueDate = (newValue: any) => {
+        setTodo({ ...todo, duedate: dayjs(newValue).format("YYYY-MM-DD") });
+    };
 
     return (
-        <>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <h1>Todo List</h1>
 
-                <input
+            <Stack direction="row" spacing={2} justifyContent={"center"}>
+                <TextField
                     type="text"
                     value={todo.description}
-                    placeholder="Type what to do"
+                    label="Type what to do"
                     onChange={(e) =>
                         setTodo({ ...todo, description: e.target.value })
                     }
                 />
-                <input
-                    type="date"
-                    value={todo.duedate}
-                    placeholder="Type due date"
-                    onChange={(e) =>
-                        setTodo({ ...todo, duedate: e.target.value })
-                    }
+                <DatePicker
+                    value={todo.duedate ? dayjs(todo.duedate) : null}
+                    label="Type due date"
+                    onChange={(newValue) => setDueDate(newValue)}
                 />
-                <input
+                <TextField
                     type="text"
                     value={todo.priority}
-                    placeholder="Type priority"
+                    label="Type priority"
                     onChange={(e) =>
                         setTodo({ ...todo, priority: e.target.value })
                     }
                 />
-                <button type="submit" onClick={addTodo}>Add</button>
-                <button onClick={handleDelete}>Delete</button>
+                <Button type="submit" onClick={addTodo}>
+                    Add
+                </Button>
+                <Button onClick={handleDelete}>Delete</Button>
+            </Stack>
 
-            <div style={{ width: 700, height: 500 }}>
-                <AgGridReact 
-                ref={gridRef}
-                rowData={todos} 
-                columnDefs={colDefs} 
-                rowSelection={"single"}
-                theme={themeMaterial}/>
+            <div style={{ width: 700, height: 500, margin: "auto" }}>
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={todos}
+                    columnDefs={colDefs}
+                    rowSelection={"single"}
+                    theme={themeMaterial}
+                />
             </div>
 
             {/* <TodoTable todos={todos} deleteTodo={deleteTodo} /> */}
-        </>
+        </LocalizationProvider>
     );
 }
 
