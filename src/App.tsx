@@ -1,17 +1,16 @@
 // import { useState } from 'react'
 // import './App.css'
-import { Css } from '@mui/icons-material'
-import TodoList from './components/TodoList'
 import Container from "@mui/material/Container"
 import CssBaseline from "@mui/material/CssBaseline"
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import BasicTabs from "./components/TabMenu";
 
 function App() {
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ paddingTop: '64px' }}>
       <AppBar>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -20,7 +19,7 @@ function App() {
         </Toolbar>
       </AppBar>
       <CssBaseline />
-      <TodoList/>
+        <BasicTabs />
       <CssBaseline />
     </Container>
   )
